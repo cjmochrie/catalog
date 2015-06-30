@@ -2,7 +2,7 @@ import random
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from catalog.database_setup import Base, User, CatalogItem
+from database_setup import Base, User, CatalogItem
 
 
 # Connect to Database and create database session
