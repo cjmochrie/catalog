@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<div class= "row">
+		<div class= "col-sm-3">
+			<h3>Categories</h2>
+			{% for category in categories %}
+				<strong><a href = '{{url_for('categoryPage', category = category)}}'>{{category}}</a><br></strong>
+			{% endfor %}
+		</div>
+
+		<div class= "col-sm-9">
+			{% if logged_in == True %}
+				<strong><a href = '{{url_for('addItem')}}'>Add item</a></strong>
+			{% endif %}
+			<h3>Latest items - {{count}} in total</h3>
+
+			{% for item in items %}
+				<a href = '{{url_for('itemPage', category = item.category, item_id = item.id)}}'>{{item.name}} </a> <em>({{item.category}})</em> <br>
+			{% endfor %}
+
+		</div>
+	</div>
+{% endblock %}

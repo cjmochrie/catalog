@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class= "row">
+		<div class= "col-sm-3"></div>
+		<div class = "col-sm-6">
+			<p><em> Are you sure you want to delete the following item?</em></p>
+			<h3>{{item.name}}</h3>
+			<p>Entered by: {{creator}}</p>
+			<p>{{item.description}}</p>
+			<form role = "form" action= "" method = 'POST'>
+				<button type='submit' class = "btn btn-danger" value='Delete'>Confirm Delete</button> | <a href= '{{url_for('itemPage', category = item.category, item_id = item.id)}}' class='btn btn-default' role = 'button'>Cancel</a>
+				<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+			</form>
+
+{% endblock %}

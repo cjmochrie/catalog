@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class= "row">
+		<div class= "col-sm-3">
+			<h3>Categories</h2>
+			{% for category in categories %}
+				<strong><a href = '{{url_for('categoryPage', category = category)}}'>{{category}}</a><br></strong>
+			{% endfor %}
+		</div>
+
+		<div class= "col-sm-9">
+			<h3>{{item.name}}</h3>
+			{% if item.image %}
+				<img src='{{url_for('static', filename = 'images/' + item.image)}}' width="200">
+			{% endif %}
+			<p>Entered by: {{creator}}</p>
+			<p>Description: {{item.description}}</p>
+
+			{% if can_edit == True %}
+				<p><a href='{{url_for('editItem', category = item.category, item_id = item.id)}}'>Edit</a> | <a href='{{url_for('deleteItem', category = item.category, item_id = item.id)}}'> Delete</a>
+				</p>
+			{% endif %}
+		</div>
+	</div>
+
+{% endblock %}
