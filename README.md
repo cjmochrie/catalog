@@ -1,7 +1,15 @@
+Changes:
+New password
+removed mannual permission setting for grader - just using sudo group access
+Remove 'AllowUsers root' from ssh config
+Fail2Ban config
+Correct hostname
+client_secrets.json update and google credentials - login should work now
+
 http://52.26.156.209/
 port 2200
 
-http://52.26.156.209/catalog/
+http://ec2-52-26-156-209.us-west-2.compute.amazonaws.com/
 
 Below are the steps I took setting the server up:
 3rd party software (not including python packages)
@@ -40,7 +48,6 @@ bash: apt-get upgrade
 Add user
 switch to root
 bash: adduser grader ---- enter 'SEE NTOES' for password
-bash: visudo  then add grader ALL=(ALL:ALL) ALL
 bash: adduser grader sudo
 
 Change SSH Port and Configure Firewall
@@ -66,13 +73,14 @@ bash: ssh-keygen -t rsa
 now should be able to login in with ssh -i my_key.rsa grader@xy.ab.yyy.zzz
 
 Disable remote root login
-bash: sudo nano /etc/ssh/sshd_config - change 'PermitRootLogin abcdefg' to 'PermitRootLogin no'
+bash: sudo nano /etc/ssh/sshd_config - change 'PermitRootLogin abcdefg' to 'PermitRootLogin no',
+     delete 'AllowUser root' under #Authentication
 bash: sudo service ssh restart
 
 Configure Fail2Ban
 bash: sudo apt-get install fail2ban
 bash: sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-bash: sudo nano /etc/fail2ban/jail.local - change 'maxretry' to 5
+bash: sudo nano /etc/fail2ban/jail.local - change 'maxretry' to 5, change [ssh] port to new port
 bash: sudo service fail2ban stop
 bash: sudo service fail2ban start
 
@@ -98,6 +106,7 @@ bash: sudo nano /etc/logrotate.d/apt-security-updates - copy in:
      '
 
 Change hostname
+Get hostname: Find domain name using reverse DNS lookup http://whois.domaintools.com
 bash: hostnamectl set-hostname new-hostname
 edit /etc/hosts after 127.0.0.1 to new-hostname
 bash: reboot
@@ -155,31 +164,31 @@ bash: sudo apt-get install libapache2-mod-wsgi python-dev
 bash: sudo nano /etc/apache2/sites-available/catalog.conf and input below
 
 <VirtualHost *:80>
-                ServerName catalog.com
-                ServerAdmin cameron.mochrie@gmail.com
-
-              WSGIDaemonProcess catalog python-path=/var/www/catalog:/vagrant/catalog/venv/lib/python2.7/site-packages
-              WSGIProcessGroup catalog
-                WSGIScriptAlias / /var/www/catalog/catalog.wsgi
-                <Directory /var/www/catalog/catalog/>
-                        Order allow,deny
-                        Allow from all
-                </Directory>
-                Alias /static /var/www/catalog/catalog/static
-                <Directory /var/www/catalog/catalog/static/>
-                        Order allow,deny
-                        Allow from all
-                </Directory>
-
-                 Alias /templates /var/www/catalog/catalog/templates
-                 <Directory /var/www/catalog/catalog/templates/>
-                         Order allow,deny
-                         Allow from all
-                 </Directory>
-
-                ErrorLog ${APACHE_LOG_DIR}/error.log
-                LogLevel warn
-                CustomLog ${APACHE_LOG_DIR}/access.log combined
+     ServerName catalog.com
+     ServerAdmin cameron.mochrie@gmail.com
+     
+     WSGIDaemonProcess catalog python-path=/var/www/catalog:/vagrant/catalog/venv/lib/python2.7/site-packages
+     WSGIProcessGroup catalog
+     WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+     <Directory /var/www/catalog/catalog/>
+         Order allow,deny
+         Allow from all
+     </Directory>
+     Alias /static /var/www/catalog/catalog/static
+     <Directory /var/www/catalog/catalog/static/>
+         Order allow,deny
+         Allow from all
+     </Directory>
+     
+     Alias /templates /var/www/catalog/catalog/templates
+     <Directory /var/www/catalog/catalog/templates/>
+          Order allow,deny
+          Allow from all
+     </Directory>
+     
+     ErrorLog ${APACHE_LOG_DIR}/error.log
+     LogLevel warn
+     CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 bash: sudo a2enmod wsgi
 bash: sudo a2dismod autoindex
