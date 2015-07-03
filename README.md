@@ -1,10 +1,13 @@
 Changes:
 New password
+grader password
+postgres user catalog password
+postgres password
+fail2ban config
+Changed hostname to ec2-52-26-156-209
+Fixed client_secrets.json to reflect correct url
 removed mannual permission setting for grader - just using sudo group access
 Remove 'AllowUsers root' from ssh config
-Fail2Ban config
-Correct hostname
-client_secrets.json update and google credentials - login should work now
 
 http://52.26.156.209/
 port 2200
